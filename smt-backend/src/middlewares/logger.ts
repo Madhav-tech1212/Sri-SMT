@@ -1,14 +1,21 @@
 import type { Request, Response, NextFunction } from "express";
 
-export const logger = (req: Request, res: Response, next: NextFunction) => {
-  const start = Date.now();
+// Logger service
+export const logger = {
+  info: (message: string) => {
+    console.log(`[INFO] ${new Date().toISOString()} - ${message}`);
+  },
+  error: (message: string, error?: unknown) => {
+    console.error(`[ERROR] ${new Date().toISOString()} - ${message}`, error);
+  },
+};
 
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    console.log(
-      `${req.method} ${req.originalUrl} ${res.statusCode} - ${duration}ms`
-    );
-  });
-
+// Request logger middleware
+export const requestLogger = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  logger.info(`${req.method} ${req.originalUrl}`);
   next();
 };
